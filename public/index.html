@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI 질문 서비스</title>
+</head>
+<body>
+    <h1>무엇이든 질문하세요!</h1>
+
+    <form id="question-form">
+        <label for="question">질문을 입력하세요:</label><br>
+        <textarea id="question" name="question" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="전송">
+    </form>
+
+    <h2>응답:</h2>
+    <p id="response"></p> <!-- OpenAI 응답이 표시될 부분 -->
+
+    <script>
+        document.getElementById('question-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // 폼 기본 제출 동작을 막음
+
+            const question = document.getElementById('question').value;
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ question })
+                });
+
+                const data = await response.text(); // 서버로부터 응답 받기
+                document.getElementById('response').textContent = data; // 응답을 화면에 표시
+            } catch (error) {
+                document.getElementById('response').textContent = '오류가 발생했습니다. 다시 시도해 주세요.';
+            }
+        });
+    </script>
+</body>
+</html>
